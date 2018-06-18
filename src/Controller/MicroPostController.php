@@ -74,4 +74,14 @@ class MicroPostController{
 		)
 		);
 	}
+
+	/**
+	* @Route("/{id}", name="micro_post_post")
+	*/
+	public function post(MicroPost $post){
+
+		return new Response(
+			$this->twig->render('micro-post/post.html.twig', [ 'post' => $post] )
+		);
+	}
 }
