@@ -23,7 +23,7 @@ class User implements UserInterface, \Serializable
     private $username;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=100)
      */
     private $password;
 
@@ -65,7 +65,8 @@ class User implements UserInterface, \Serializable
         
     }
 
-    public function serialize(){
+    public function serialize()
+    {
         return serialize([
             $this->id,
             $this->username,
@@ -73,33 +74,59 @@ class User implements UserInterface, \Serializable
         ]);
     }
 
-    public function unserialize($serialized){
+    public function unserialize($serialized)
+    {
         list($this->id,
             $this->username,
             $this->password) = unserialize($serialized);
     }
 
-    public function getEmail(){
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
         return $this->email;
     }
 
-    public function setEmail($email): void{
+    /**
+     * @param mixed $email
+     */
+    public function setEmail($email): void
+    {
         $this->email = $email;
     }
 
-    public function getFullName(){
+    /**
+     * @return mixed
+     */
+    public function getFullName()
+    {
         return $this->fullName;
     }
 
-    public function setFullName($fullName): void{
+    /**
+     * @param mixed $fullName
+     */
+    public function setFullName($fullName): void
+    {
         $this->fullName = $fullName;
     }
 
-    public function setUsername($username): void{
+    /**
+     * @param mixed $username
+     */
+    public function setUsername($username): void
+    {
         $this->username = $username;
     }
 
-    public function setPassword($password): void{
+    /**
+     * @param mixed $password
+     */
+    public function setPassword($password): void
+    {
         $this->password = $password;
     }
 }
