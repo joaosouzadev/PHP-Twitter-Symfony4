@@ -7,3 +7,8 @@
         {{ post.text }}.
     </p>
 </div>
+{% if app.request.attributes.get('_route') starts with 'micro_post_post' %}
+<small class="btn btn-warning float-right" style="margin: 40px 0;">
+    <a href="{{ path('micro_post_index') }}" style="text-decoration: none; color: black"><i class="fas fa-long-arrow-alt-left"></i>  Voltar</a>
+</small>
+{% endif %}
