@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MicroPostRepository")
@@ -28,6 +29,12 @@ class MicroPost
     */
     private $time;
 
+    /**
+    * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="posts")
+    * @ORM\JoinColumn()
+    */
+    private $user;
+
     public function getId(){
         return $this->id;
     }
@@ -46,5 +53,13 @@ class MicroPost
 
     public function setTime($time): void{
         $this->time = $time;
+    }
+
+    public function getUser(){
+        return $this->user;
+    }
+
+    public function setUser($user): void{
+        $this->user = $user;
     }
 }

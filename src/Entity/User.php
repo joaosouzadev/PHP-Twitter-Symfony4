@@ -6,6 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -52,6 +54,17 @@ class User implements UserInterface, \Serializable
      * @Assert\Length(min= 8, max= 50)
      */
     private $fullName;
+
+    /**
+    * @ORM\OneToMany(targetEntity="App\Entity\MicroPost", mappedBy="user")
+    * @ORM\JoinColumn()
+    */
+    private $posts;
+
+    public function __construct() {
+
+        $this->posts = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -152,5 +165,9 @@ class User implements UserInterface, \Serializable
 
     public function setPlainPassword($plainPassword): void {
             $this->plainPassword = $plainPassword;
+    }
+
+    public function getPosts(){
+        return $this->posts;
     }
 }
