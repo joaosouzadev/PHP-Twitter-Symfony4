@@ -23,8 +23,12 @@
 		</a>
 
 		<small class="d-block text-right mt-3  border-bottom border-gray">
-            <a href="{{ path('micro_post_edit', {'id': post.id }) }}">Editar</a>
-            <a href="{{ path('micro_post_delete', {'id': post.id }) }}">Deletar</a>
+			{% if is_granted('edit', post) %}
+            	<a href="{{ path('micro_post_edit', {'id': post.id }) }}">Editar</a>
+        	{% endif %}
+        	{% if is_granted('delete', post) %}
+            	<a href="{{ path('micro_post_delete', {'id': post.id }) }}">Deletar</a>
+            {% endif %}
         </small>
 	{% endfor %}
 {% endblock %}
