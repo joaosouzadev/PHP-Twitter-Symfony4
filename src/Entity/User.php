@@ -202,10 +202,16 @@ class User implements UserInterface, \Serializable
         return $this->posts;
     }
 
+    /**
+     * @return Collection
+     */
     public function getFollowers() {
         return $this->followers;
     }
 
+    /**
+     * @return Collection
+     */
     public function getFollowing() {
         return $this->following;
     }
