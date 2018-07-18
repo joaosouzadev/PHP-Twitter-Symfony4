@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping\ManyToOne;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MicroPostRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class MicroPost
 {
@@ -53,6 +54,13 @@ class MicroPost
 
     public function setTime($time): void{
         $this->time = $time;
+    }
+
+    /**
+    * @ORM\PrePersist()
+    */
+    public function setTimeOnPersist(): void {
+        $this->time = new \DateTime();
     }
 
     public function getUser(){
