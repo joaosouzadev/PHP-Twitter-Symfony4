@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -214,5 +215,66 @@ class User implements UserInterface, \Serializable
      */
     public function getFollowing() {
         return $this->following;
+    }
+
+    public function addPost(MicroPost $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(MicroPost $post): self
+    {
+        if ($this->posts->contains($post)) {
+            $this->posts->removeElement($post);
+            // set the owning side to null (unless already changed)
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function addFollower(User $follower): self
+    {
+        if (!$this->followers->contains($follower)) {
+            $this->followers[] = $follower;
+            $follower->addFollowing($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(User $follower): self
+    {
+        if ($this->followers->contains($follower)) {
+            $this->followers->removeElement($follower);
+            $follower->removeFollowing($this);
+        }
+
+        return $this;
+    }
+
+    public function addFollowing(User $following): self
+    {
+        if (!$this->following->contains($following)) {
+            $this->following[] = $following;
+        }
+
+        return $this;
+    }
+
+    public function removeFollowing(User $following): self
+    {
+        if ($this->following->contains($following)) {
+            $this->following->removeElement($following);
+        }
+
+        return $this;
     }
 }
