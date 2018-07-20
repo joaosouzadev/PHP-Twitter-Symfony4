@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Entity\MicroPost;
 use App\Form\MicroPostType;
 use App\Repository\MicroPostRepository;
@@ -62,14 +63,20 @@ class MicroPostController{
 	/**
 	* @Route("/", name="micro_post_index")
 	*/
-	public function index(TokenStorageInterface $tokenStorage){
+	public function index(TokenStorageInterface $tokenStorage, UserRepository $userRepository){
 
 		$currentUser = $tokenStorage->getToken()->getUser();
+		$usersToFollow = [];
 
 		if ($currentUser instanceof User) { 
 			$posts = $this
 				->microPostRepository
-				->findAllByUsers($currentUser->getFollowing());
+				->findAllByUsers(
+					$currentUser->getFollowing()
+				);
+
+			$usersToFollow = count($posts) === 0 ?
+			$userRepository->findAllWithMoreThan2PostsExceptUser($currentUser) : [];
 		} else {
 			$posts = $this->microPostRepository->findBy(
 				[], 
@@ -80,6 +87,7 @@ class MicroPostController{
 		$html = $this->twig->render('micro-post/index.html.twig',
 			[
 				'posts' => $posts,
+				'usersToFollow' => $usersToFollow
 			]
 		);
 

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -19,32 +20,31 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-//    /**
-//     * @return User[] Returns an array of User objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+    public function findAllWithMoreThan2Posts() {
 
-    /*
-    public function findOneBySomeField($value): ?User
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
+        $querybuilder = $this->createQueryBuilder('u');
+
+        return $this->getFindAllWithMoreThan2PostsQuery()
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
+    public function findAllWithMoreThan2PostsExceptUser(User $user) {
+
+        return $this->getFindAllWithMoreThan2PostsQuery()
+            ->andHaving('u != :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    private function getFindAllWithMoreThan2PostsQuery(): QueryBuilder {
+
+        $querybuilder = $this->createQueryBuilder('u');
+
+        return $querybuilder->select('u') // alias para user
+            ->innerJoin('u.posts', 'micropost')
+            ->groupBy('u')
+            ->having('count(micropost) > 2');
+    }
 }
