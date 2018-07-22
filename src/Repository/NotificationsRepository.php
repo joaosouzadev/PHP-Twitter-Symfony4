@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Notifications;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -19,32 +20,14 @@ class NotificationsRepository extends ServiceEntityRepository
         parent::__construct($registry, Notifications::class);
     }
 
-//    /**
-//     * @return Notifications[] Returns an array of Notifications objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('n.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+    public function findUnseenByUser(User $user) {
 
-    /*
-    public function findOneBySomeField($value): ?Notifications
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
+        $qb = $this->createQueryBuilder('n');
+
+        return $qb->select('count(n)')
+            ->where('n.user = :user')
+            ->setParameter('user', $user)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getSingleScalarResult();
     }
-    */
 }
