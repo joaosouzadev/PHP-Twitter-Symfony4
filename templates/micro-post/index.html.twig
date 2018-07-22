@@ -9,10 +9,10 @@
 
     {% if usersToFollow|length > 0 %}
         <p>Você não segue ninguém no momento.<p>
-        <p>Por quê não segue algum dos usuários abaixo para começarmos? ;)</p>
+        <p>Por quê não dá uma olhada no conteúdo dos usuários abaixo? ;)</p>
 
         {% for userToFollow in usersToFollow %}
-            <a href="{{ path('following_follow', {'id': userToFollow.id}) }}">@{{ userToFollow.username }}</a>
+            <a href="{{ path('micro_post_user', {'username': userToFollow.username}) }}">@{{ userToFollow.username }}</a>
         {% endfor %}
 
     {% else %}
