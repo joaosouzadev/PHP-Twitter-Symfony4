@@ -29,7 +29,7 @@
             {% if is_granted('ROLE_USER') %}
                 <li class="nav-item text-nowrap border-right border-secondary">
                     <a class="nav-link"
-                        href="" >Notifications
+                        href="{{ path('notifications_all') }}" >Notificações
                         <span class="badge badge-light" id="notifications-count">
                             <i class="fa fa-circle fa-circle-o-notch fa-spin"></i>
                         </span>
