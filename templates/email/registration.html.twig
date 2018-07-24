@@ -2,6 +2,9 @@
 
 Hello {{ user.fullName }}! Você se registrou no app!
 
-Entre no site acessando a <a href="{{ url('security_login') }}">página de login</a>.
+Por favor, confirme seu cadastro clicando
+<a href="{{ url('security_confirm', {'token': user.confirmationToken }) }}">
+	neste link.
+</a>
 
 Obrigado!

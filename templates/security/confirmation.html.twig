@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% if user is defined %}
+    	<h5>Bem vindo!</h5>
+    	<p>Sua conta está validada! Faça o login<a href="{{ path('security_login') }}">aqui.</a></p>
+    {% else %}
+    	<p>A validação falhou. Por favor, cheque seu e-mail.</p>
+    {% endif %}
+{% endblock %}

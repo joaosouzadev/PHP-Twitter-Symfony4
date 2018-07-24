@@ -5,18 +5,16 @@ namespace App\Entity;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping\OneToMany;
-use Doctrine\ORM\Mapping\ManyToMany;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="This e-mail is already used.")
  * @UniqueEntity(fields="username", message="This username is already used.")
  */
-class User implements UserInterface, \Serializable
+class User implements AdvancedUserInterface, \Serializable
 {
 
     const ROLE_USER = 'ROLE_USER';
@@ -95,12 +93,23 @@ class User implements UserInterface, \Serializable
     */
     private $postsLiked;
 
+    /**
+     * @ORM\Column(type="string", nullable=true, length=30)
+     */
+    private $confirmationToken;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $enabled;
+
     public function __construct() {
         $this->posts = new ArrayCollection();
         $this->followers = new ArrayCollection();
         $this->following = new ArrayCollection();
         $this->postsLiked = new ArrayCollection();
         $this->roles = [self::ROLE_USER];
+        $this->enabled = false;
     }
 
     public function getId()
@@ -138,7 +147,8 @@ class User implements UserInterface, \Serializable
         return serialize([
             $this->id,
             $this->username,
-            $this->password
+            $this->password,
+            $this->enabled
         ]);
     }
 
@@ -146,7 +156,8 @@ class User implements UserInterface, \Serializable
     {
         list($this->id,
             $this->username,
-            $this->password) = unserialize($serialized);
+            $this->password,
+            $this->enabled) = unserialize($serialized);
     }
 
 
@@ -298,5 +309,65 @@ class User implements UserInterface, \Serializable
     */
     public function getPostsLiked() {
         return $this->postsLiked;
+    }
+
+    public function getConfirmationToken(): ?string
+    {
+        return $this->confirmationToken;
+    }
+
+    public function setConfirmationToken(?string $confirmationToken): self
+    {
+        $this->confirmationToken = $confirmationToken;
+
+        return $this;
+    }
+
+    public function addPostsLiked(MicroPost $postsLiked): self
+    {
+        if (!$this->postsLiked->contains($postsLiked)) {
+            $this->postsLiked[] = $postsLiked;
+            $postsLiked->addLikedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostsLiked(MicroPost $postsLiked): self
+    {
+        if ($this->postsLiked->contains($postsLiked)) {
+            $this->postsLiked->removeElement($postsLiked);
+            $postsLiked->removeLikedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function getEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): self
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    public function isAccountNonExpired() {
+        return true;
+    }
+
+    public function isAccountNonLocked() {
+        return true;
+    }
+
+    public function isCredentialsNonExpired() {
+        return true;
+    }
+
+    public function isEnabled() {
+        return $this->enabled;
     }
 }
