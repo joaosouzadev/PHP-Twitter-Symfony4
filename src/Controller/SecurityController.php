@@ -48,7 +48,7 @@ class SecurityController
      */
     public function confirm(string $token, UserRepository $userRepository, EntityManagerInterface $entityManager) {
 
-        $user = $userRepository->findOneById(
+        $user = $userRepository->findOneBy(
             [
                 'confirmationToken' => $token
             ]
